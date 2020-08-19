@@ -6,23 +6,23 @@ export default{
     homeResult: null,
   },
   mutations:{
-    // getHomeResult(state, newData) {
-    //   console.log("multations方法。。。。。。。。。。。。。。。。。。。。。");
-    //   state.homeResult = newData
-    // }
+    getHomeResult(state, newData) {
+      console.log("multations方法。。。。。。。。。。。。。。。。。。。。。");
+      state.homeResult = newData
+    }
   },
   actions:{
-    // aGetHomeMultidata({commit}) {
-    //   return new Promise((resolve,reject) => {
+    aGetHomeMultidata({commit}) {
+      return new Promise((resolve,reject) => {
 
-    //     api.getHomeMultidata().then(res => {
-    //       console.log(res);
-    //       commit("getHomeResult", res);
-    //       resolve(res);
-    //     })
+        api.getHomeMultidata().then(res => {
+          console.log(res);
+          commit("getHomeResult", res);
+          resolve(res);
+        })
 
-    //   })
-    // }
+      })
+    }
   },
   getters:{
 

@@ -1,0 +1,104 @@
+#### 1，页面组件的data与state绑定时，视图、data保持和state一致的办法
+
+* computed
+
+  ```javascript
+  computed:{
+       getResult(){
+         return this.$store.state.Home.homeResult;
+       }
+  },
+  ```
+
+* watch监听
+
+  ```javascript
+  data(){
+      return{
+      	result: this.watchResult,
+      }
+  },
+  watchResult(){
+      this.result = this.$store.state.Home.homeResult;
+  }
+  ```
+
+  
+
+#### 2，从页面改变state的数据
+
+* 直接修改state的值，不推荐
+
+  ```javascript
+  this.$store.state.Home.homeResult = res
+  ```
+
+  
+
+* 通过mutations方法方法更新到state，推荐
+
+  ```javascript
+   this.$store.commit('getHomeResult',res);
+  ```
+
+  
+
+  两种方法都是响应式的，可以触发视图更新；使用commit提交到mutations修改的优点在于vuex能够记录每一次state的变化，保存状态快照，实现时间漫游/回滚之类的操作。
+
+
+
+#### 3，页面发起请求的写法
+
+* 页面直接请求
+
+  ```javascript
+  getHomeMultidata().then(res=>{
+    console.log(res);
+  })
+  ```
+
+  
+
+* 页面通过store中的action发起请求，再从state中传到页面
+
+  ```javascript
+  //store文件中写请求方法
+  state:{
+      homeResult: null,
+    },
+    mutations:{
+      getHomeResult(state, newData) {
+        state.homeResult = newData
+      }
+    },
+    actions:{
+      aGetHomeMultidata({commit}) {
+        return new Promise((resolve,reject) => {
+  
+          api.getHomeMultidata().then(res => {
+            console.log(res);
+            commit("getHomeResult", res);
+            resolve(res);
+          })
+  
+        })
+      }
+    },
+    getters:{
+  
+    },
+  }
+  ```
+
+  ```javascript
+  //页面中调用action方法
+  this.$store.dispatch({
+          type:'aGetHomeMultidata',
+        })
+        .then((res)=>{
+        	console.log(this.$store.state.Home.homeResult);
+          console.log(res.data);
+        })
+  ```
+
+  

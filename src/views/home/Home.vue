@@ -1,6 +1,7 @@
 <template>
   <div id="home">
     <NavBar class="home-nav"><div slot="center">购物街</div></NavBar>
+    <p class="content">{{result}}</p>
   </div>
 </template>
 
@@ -16,16 +17,21 @@
     },
     data(){
       return{
-        result: null,
+        result: this.watchResult,
       }
     },
     created(){
+      //1,请求直接从页面发出
       getHomeMultidata().then(res=>{
         console.log(res);
         this.result = res;
-        // Vue.set(this.$store.state,"homeResult",res);
-        // this.$store.state.Home.homeResult.setData(res);
+        //通过mutations方法从页面更新数据到store的state中
+        this.$store.commit('getHomeResult',res);
+        //直接修改state中值，不推荐
+        // this.$store.state.Home.homeResult = res;
       })
+
+      //2,请求从store的action发起，异步请求后通过mutations设置到state中
       // this.$store.dispatch({
       //   type:'aGetHomeMultidata',
       // })
@@ -44,6 +50,16 @@
     methods:{
 
     },
+    computed:{
+      // getResult(){
+      //   return this.$store.state.Home.homeResult;
+      // }
+    },
+    watch:{
+      watchResult(){
+         this.result = this.$store.state.Home.homeResult;
+      }
+    }
   }
 </script>
 
@@ -65,6 +81,7 @@
     z-index: 9;
   }
 
+
   .tab-control {
     position: sticky;
     top: 44px;
@@ -72,8 +89,8 @@
   }
 
   .content {
-    overflow: hidden;
-
+    /* overflow: hidden; */
+    overflow-y: scroll;
     position: absolute;
     top: 44px;
     bottom: 49px;
